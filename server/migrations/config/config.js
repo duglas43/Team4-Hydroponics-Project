@@ -14,6 +14,7 @@ module.exports = {
     },
     define: {
       freezeTableName: true,
+      updatedAt: false,
     },
   },
   test: {
@@ -29,6 +30,7 @@ module.exports = {
     },
     define: {
       freezeTableName: true,
+      updatedAt: false,
     },
   },
   production: {
@@ -44,6 +46,7 @@ module.exports = {
     },
     define: {
       freezeTableName: true,
+      updatedAt: false,
     },
   },
 };
