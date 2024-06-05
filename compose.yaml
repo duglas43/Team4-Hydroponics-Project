@@ -1,0 +1,53 @@
+services:
+  mysql:
+    image: mysql:8.0
+    restart: always
+    volumes:
+      - mysql-data:/var/lib/mysql
+    env_file:
+      - path: ./server/.env
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    env_file:
+      - path: ./server/.env
+    ports:
+      - 8080:4000
+    environment:
+      - PMA_HOST=${DB_HOST}
+      - PMA_USER=${DB_USER}
+      - PMA_PASSWORD=${DB_PASS}
+
+  server:
+    build: ./server
+    restart: always
+    depends_on:
+      - mysql
+    env_file:
+      - path: ./server/.env
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+
+  mqtt-server-transfer:
+    build: ./mqtt-server-transfer
+    restart: always
+    depends_on:
+      - mysql
+    env_file:
+      - path: ./mqtt-server-transfer/.env
+  client:
+    build: client
+    restart: always
+    ports:
+      - 3000:3000
+    env_file:
+      - path: ./client/.env
+
+volumes:
+  mysql-data:

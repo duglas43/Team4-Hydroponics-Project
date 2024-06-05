@@ -18,13 +18,15 @@ DHT dht(DHTPIN, DHTTYPE);
 WiFiClientSecure net = WiFiClientSecure();
 PubSubClient client(net);
 
-void connectAWS() {
+void connectAWS()
+{
   WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
   Serial.println("Connecting to Wi-Fi");
 
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(500);
     Serial.print(".");
   }
@@ -42,12 +44,14 @@ void connectAWS() {
 
   Serial.println("Connecting to AWS IOT");
 
-  while (!client.connect(THINGNAME)) {
+  while (!client.connect(THINGNAME))
+  {
     Serial.print(".");
     delay(100);
   }
 
-  if (!client.connected()) {
+  if (!client.connected())
+  {
     Serial.println("AWS IoT Timeout!");
     return;
   }
@@ -58,7 +62,8 @@ void connectAWS() {
   Serial.println("AWS IoT Connected!");
 }
 
-void publishMessage() {
+void publishMessage()
+{
   StaticJsonDocument<400> doc;
   doc["humidity"] = h;
   doc["temperature"] = t;
@@ -69,29 +74,33 @@ void publishMessage() {
   client.publish(AWS_IOT_PUBLISH_TOPIC, jsonBuffer);
 }
 
-void messageHandler(char* topic, byte* payload, unsigned int length) {
+void messageHandler(char *topic, byte *payload, unsigned int length)
+{
   Serial.print("incoming: ");
   Serial.println(topic);
 
   StaticJsonDocument<400> doc;
   deserializeJson(doc, payload);
-  const char* message = doc["message"];
+  const char *message = doc["message"];
   Serial.println(message);
 }
 
-void setup() {
+void setup()
+{
   Serial.begin(115200);
   connectAWS();
   dht.begin();
   pinMode(WATER_LEVEL_SENSOR_PIN, INPUT);
 }
 
-void loop() {
+void loop()
+{
   waterLevelSensorValue = analogRead(WATER_LEVEL_SENSOR_PIN);
   h = dht.readHumidity();
   t = dht.readTemperature();
 
-  if (isnan(h) || isnan(t)) {
+  if (isnan(h) || isnan(t))
+  {
     Serial.println(F("Failed to read from DHT sensor!"));
     return;
   }
